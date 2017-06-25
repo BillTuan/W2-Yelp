@@ -9,34 +9,66 @@ import {
   ListView,
   Image,
   Button,
-  TextInput
+  TextInput,
+  ActivityIndicator,
+  RefreshControl
 } from 'react-native';
 import {connect} from 'react-redux';
 import {fetchData} from '../actions/fetchAction';
 
 class ListCom extends Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows([]),
+      text: "",
+      refreshing: false,
+      tempParams: ""
     };
   }
-  // static navigationOptions = ({navigation}) => ({
-  //       headerStyle: {backgroundColor: 'red'},
-  //       headerTintColor: 'white',
-  //       headerLeft: <Button color='blue' title = 'Filter' onPress={() => navigation.navigate('Setting_Screen')} />
-  //     })
-
   componentDidMount() {
-    this.props.getData();
+    this.props.getData(this.state.tempParams);
   }
   componentWillReceiveProps(newProps) {
     if(newProps.data.foods.length !== 0)
     {
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(newProps.data.foods)
+      })
+    }
+    if(newProps.setting.isRefresh === true){
+      this._getFilterFromSetting(newProps);
+      newProps.setting.isRefresh = false;
+      console.log("get data filter");
+      this.props.getData(this.state.tempParams);
+      this.setState({
+        tempParams: ""
+      })
+    }
+  }
+
+  _getFilterFromSetting(newProps){
+    const {attributes, radius, sort_by, categories} = newProps.setting;
+    if(attributes){
+      this.setState({
+        tempParams: this.state.tempParams += "&attributes=deals"
+      })
+    }
+    if(radius !== 1){
+      this.setState({
+        tempParams: this.state.tempParams += "&radius=" + radius
+      })
+    }
+    if(sort_by !== ''){
+      this.setState({
+        tempParams: this.state.tempParams += "&sort_by=" + sort_by
+      })
+    }
+    if (categories !== '') {
+      this.setState({
+        tempParams: this.state.tempParams += "&categories=" + categories
       })
     }
   }
@@ -69,6 +101,27 @@ class ListCom extends Component {
         </View>
       )
   }
+  _filterSearch(text){
+    this.setState({text: text})
+    var filterData = this.props.data.foods.filter(function(item){
+      var itemData = item.name.toLowerCase();
+      var textSearch = text.toLowerCase();
+      return itemData.indexOf(textSearch) > -1
+    })
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(filterData)
+    })
+  }
+
+  _onRefresh(){
+    this.setState({refreshing: true});
+    this._getFilterFromSetting(this.props);
+    this.props.getData(this.state.tempParams);
+    this.setState({
+      refreshing: false,
+      tempParams: ""
+    })
+  }
   header(){
     return(
       <View style={styles.header}>
@@ -81,27 +134,38 @@ class ListCom extends Component {
         </View>
         <TextInput
           style = {{flex: 8, borderWidth: 1, backgroundColor: 'white'}}
+          value = {this.state.text}
+          onChangeText={(text)=>this._filterSearch(text)}
         />
       </View>
     )
   }
 
   render() {
-    console.log(this.props);
     return (
       <View style={{flex: 1}}>
         {this.header()}
         {
-          this.props.data.isFetching && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text style={{}}>Loading... </Text></View>
+          this.props.data.isFetching && <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator
+            animating={this.state.animating}
+                    style={{height: 100}}
+                    size="large"/>
+            <Text style ={{fontWeight:'500'}}>Loading</Text>
+          </View>
         }
         {
           this.props.data.foods.length ? (
               <ListView
+                refreshControl={<RefreshControl
+                                  refreshing={this.state.refreshing}
+                                  onRefresh={this._onRefresh.bind(this)}
+                                />}
                 dataSource={this.state.dataSource}
                 renderRow={(rowData) => this.renderCell(rowData)}
                 enableEmptySections = {true}
               />
-          ) : null
+          ) : <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}><Text>NO DATA</Text></View>
         }
       </View>
     );
@@ -123,13 +187,14 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return{
-    data: state.dataReducer
+    data: state.dataReducer,
+    setting: state.settingReducer
   }
 };
 
 function mapDispatchToProps(dispatch) {
   return {
-    getData: () => dispatch(fetchData())
+    getData: (params) => dispatch(fetchData(params))
   }
 };
 

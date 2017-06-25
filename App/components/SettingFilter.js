@@ -10,16 +10,21 @@ import {
   Picker
 } from 'react-native';
 import {Switch} from 'react-native-switch';
+import {connect} from 'react-redux';
+import {actionCreators} from '../actions/saveFilterAction';
 
 const DISTANCE_OPTION = ["0.3 miles", "1 mile", "5 miles", "20 miles"];
 const DISTANCE_RETURN = ["0.3", "1", "5", "20"];
 const SORT_BY_OPTION = ["best_match", "rating", "review_count", "distance"];
-export default class SettingCom extends Component {
+class SettingCom extends Component {
   constructor(props) {
     super(props);
+    tempCategory = [];
+    categories = "";
     this.state = {
-      selectedDistance: '0.3',
+      selectedDistance: "482",
       selectedSort: 'best_match',
+      attributes: true,
       listCategory: [],
       loadMore: false,
       stepLoad: 1
@@ -63,8 +68,27 @@ export default class SettingCom extends Component {
 
   _changeValueSwitch(value, alias){
     if(value){
-      console.log(alias);
+      tempCategory.push(alias)
+    }else{
+      var pos = tempCategory.indexOf(alias);
+      tempCategory.splice(pos, 1);
     }
+
+    var temp = "";
+    categories = "";
+    for (let i = 0; i < tempCategory.length; i++) {
+      if(i !==  (tempCategory.length-1)){
+        temp = ","
+      }else{
+        temp= ""
+      }
+      categories += tempCategory[i] + temp
+    }
+    console.log(categories);
+  }
+  _saveFilter(){
+    this.props.dispatch(actionCreators.fetchDataSetting(this.state.attributes, this.state.selectedDistance, this.state.selectedSort, categories));
+    this.props.navigation.goBack();
   }
 
   header(){
@@ -83,6 +107,11 @@ export default class SettingCom extends Component {
           </Text>
         </View>
         <View style={{flex: 2}}>
+          <Button
+            backgroundColor = 'blue'
+            title = 'Save'
+            onPress = {() => this._saveFilter()}
+          />
         </View>
       </View>
     )
@@ -97,7 +126,9 @@ export default class SettingCom extends Component {
               <Text style={{}}>
                 Offer Deals
               </Text>
-              <Switch/>
+              <Switch
+                onValueChange = {(value) => this.setState({attributes: value})}
+              />
             </View>
             <Text style={{}}>
               Distance
@@ -107,10 +138,10 @@ export default class SettingCom extends Component {
                 selectedValue = {this.state.selectedDistance}
                 onValueChange = {(value) => this.setState({selectedDistance: value})}
                 >
-                  <Picker.Item label="0.3 miles" value="0.3" />
-                  <Picker.Item label="1 miles" value="1" />
-                  <Picker.Item label="5 miles" value="5" />
-                  <Picker.Item label="20 miles" value="20" />
+                  <Picker.Item label="0.3 miles" value = "482"/>
+                  <Picker.Item label="1 miles" value = "1609" />
+                  <Picker.Item label="5 miles" value = "8046" />
+                  <Picker.Item label="20 miles" value = "32186" />
               </Picker>
             </View>
             <Text style={{}}>
@@ -143,6 +174,9 @@ export default class SettingCom extends Component {
     );
   }
 }
+
+
+export default connect()(SettingCom);
 
 const styles = StyleSheet.create({
   container: {

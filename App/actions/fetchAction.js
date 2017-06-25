@@ -18,10 +18,11 @@ function getDataFailed(){
   }
 }
 
-export function fetchData(){
+export function fetchData(params){
   return (dispatch) => {
     dispatch(getData())
-    fetch('https://api.yelp.com/v3/businesses/search?term=restaurants&location=SanFrancisco',{
+    console.log(params);
+    fetch('https://api.yelp.com/v3/businesses/search?term=restaurants&location=SanFrancisco' + params,{
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
