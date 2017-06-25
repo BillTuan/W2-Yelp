@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Button,
   ScrollView,
-  Picker
+  Picker,
+  TouchableOpacity
 } from 'react-native';
 import {Switch} from 'react-native-switch';
 import {connect} from 'react-redux';
@@ -46,7 +47,8 @@ class SettingCom extends Component {
   _loadCategory(){
     var viewCategory = [];
     if(this.state.listCategory.length > 2){
-      for (let i = 0; i < 10*this.state.stepLoad ; i++) {
+      var loadCond = this.state.stepLoad == 1 ? 5 : this.state.stepLoad*100
+      for (let i = 0; i < loadCond ; i++) {
         var view = <View key={i} style={styles.offer}>
                       <Text style={{}}>
                         {this.state.listCategory[i].title}
@@ -95,23 +97,27 @@ class SettingCom extends Component {
     return(
       <View style={styles.header}>
         <View style={{flex: 2, justifyContent: 'center'}}>
-          <Button
-            backgroundColor = 'blue'
-            title = 'Cancel'
-            onPress = {() => this.props.navigation.goBack()}
-          />
+          <TouchableOpacity onPress = {() => this.props.navigation.goBack()}>
+            <View style={styles.button}>
+              <Text style={styles.titleButton}>
+                Cancel
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
         <View style={{flex: 6, justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{color: 'white'}}>
+          <Text style={{color: 'white', fontWeight: '600', fontSize: 20}}>
             Setting
           </Text>
         </View>
-        <View style={{flex: 2}}>
-          <Button
-            backgroundColor = 'blue'
-            title = 'Save'
-            onPress = {() => this._saveFilter()}
-          />
+        <View style={{flex: 2, justifyContent: 'center'}}>
+          <TouchableOpacity onPress = {() => this._saveFilter()}>
+            <View style={styles.button}>
+              <Text style={styles.titleButton}>
+                Save
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -198,5 +204,20 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     borderWidth: 1,
+  },
+  button: {
+    backgroundColor:'red',
+    borderRadius:4,
+    borderColor:'#ffffff',
+    borderWidth:1,
+    height : 35,
+    alignItems:'center',
+    justifyContent:'center',
+    padding:5,
+  },
+  titleButton: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 18
   }
 });

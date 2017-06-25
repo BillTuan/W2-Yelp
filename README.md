@@ -2,36 +2,33 @@
 
 Yelp is a Yelp search app using the [Yelp API](https://www.yelp.com/developers/documentation/v3/business_search).
 
-Time spent: **X** hours spent in total
+Time spent: **15** hours spent in total
 
 ## User Stories
 
 The following **required** functionality is completed:
-- [ ] Login Screen, just a page before go to Homepage
-- [ ] Search results page
-   - [ ] Add filter button and search text input.
-   - [ ] Display items, rows should be dynamic height according to the content height.
-   - [ ] Infinite scroll for restaurant results.
-- [ ] Filter page: (Unfortunately, not all the filters in the real Yelp App, are supported in the Yelp API)
-   - [ ] Categories should show a subset of the full list, and when click "Show all" row to expand all subset.
-   - [ ] Clicking on the "Search" button should dismiss the filters page and trigger the search with the new filter settings.
-   - [ ] Using Redux to storage filter data
- - [ ] Show loading page when waiting to fetch data from Yelp
+- [x] Login Screen, just a page before go to Homepage
+- [x] Search results page
+   - [x] Add filter button and search text input.
+   - [x] Display items, rows should be dynamic height according to the content height.
+   - [x] Infinite scroll for restaurant results.
+- [x] Filter page: (Unfortunately, not all the filters in the real Yelp App, are supported in the Yelp API)
+   - [x] Categories should show a subset of the full list, and when click "Show all" row to expand all subset.
+   - [x] Clicking on the "Search" button should dismiss the filters page and trigger the search with the new filter settings.
+   - [x] Using Redux to storage filter data
+ - [x] Show loading page when waiting to fetch data from Yelp
 
 
 The following **optional** features are implemented:
 
-- [ ] Implement the restaurant detail page with map view (show restaurant's position). [react-native-maps](https://github.com/airbnb/react-native-maps))
+- [ ] Implement the restaurant detail page with map view (show restaurant's position).
 - [ ] Implement a custom switch to look like Yelp app.
 
-![Image](https://media.giphy.com/media/xUPGcFu0WDyYrdCdDq/giphy.gif)
-
-- [ ] Implement login page with [Facebook SDK](https://github.com/facebook/react-native-fbsdk)
+- [x] Implement login page with [Facebook SDK](https://github.com/facebook/react-native-fbsdk)
 - [ ] Implements TabbarIOS
   - [ ] ListView, the layout as description above
   - [ ] MapView, list all place on Map as Marker, and the layout as below. [Example](https://github.com/airbnb/react-native-maps#using-the-mapview-with-the-animated-api)
-  
-  ![Image](http://i.giphy.com/3o6UBdGQdM1GmVoIdq.gif)
+
 
 The following **additional** features are implemented:
 
@@ -39,14 +36,14 @@ The following **additional** features are implemented:
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1.
-2.
+1. In this assignment, I didn't work with MapView. Hope to deal with it next time
+2. Work with Redux is still complex to me
 
 ## Video Walkthrough
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='walkthrough.gif' title='Video Walkthrough' width='350px' height='600px' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 

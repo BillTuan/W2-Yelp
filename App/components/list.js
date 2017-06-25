@@ -11,8 +11,10 @@ import {
   Button,
   TextInput,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  TouchableOpacity
 } from 'react-native';
+import Stars from 'react-native-stars'
 import {connect} from 'react-redux';
 import {fetchData} from '../actions/fetchAction';
 
@@ -79,6 +81,7 @@ class ListCom extends Component {
       category += rowData.categories[i].title + ", ";
     }
     category += rowData.categories[i].title;
+    var address = rowData.location.display_address[0] + ', ' + rowData.location.city;
       return(
         <View style={styles.cell}>
           <View style={{flex: 3}}>
@@ -88,15 +91,33 @@ class ListCom extends Component {
             />
           </View>
           <View style={{flex: 7}}>
-            <Text style={{}}>
+            <Text style={{fontSize: 16, fontWeight: 'bold'}}>
               {rowData.name}
             </Text>
-            <Text style={{}}>
-              {rowData.rating}/{rowData.review_count}
-            </Text>
-            <Text style={{}}>
-              {category}
-            </Text>
+            <View style={{flexDirection: 'row' , justifyContent: 'space-between', marginTop: 5}}>
+              <View style={{alignItems:'center'}}>
+                <Stars
+                  half={true}
+                  value={rowData.rating}
+                  spacing={5}
+                  count={5}
+                  starSize={20}
+                  backingColor='cornsilk'
+                  fullStar= {require('../image/starFilled.png')}
+                  emptyStar= {require('../image/starEmpty.png')}
+                  halfStar= {require('../image/starHalf.png')}
+                />
+              </View>
+              <Text>{rowData.review_count} reviews</Text>
+            </View>
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'space-between', marginTop: 10}}>
+              <Text style={{fontWeight: '600'}}>
+                {address}
+              </Text>
+              <Text style={{}}>
+                {category}
+              </Text>
+            </View>
           </View>
         </View>
       )
@@ -126,17 +147,21 @@ class ListCom extends Component {
     return(
       <View style={styles.header}>
         <View style={{flex: 2, justifyContent: 'center'}}>
-          <Button
-            backgroundColor = 'blue'
-            title = 'Filter'
-            onPress = {() => this.props.navigation.navigate('Setting_Screen')}
+          <TouchableOpacity onPress = {() => this.props.navigation.navigate('Setting_Screen')}>
+            <View style={styles.button}>
+              <Text style={styles.titleButton}>
+                Filter
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+        <View style={{flex: 8, margin: 7 }}>
+          <TextInput
+            style = {{ backgroundColor: 'white', borderRadius: 4}}
+            value = {this.state.text}
+            onChangeText={(text)=>this._filterSearch(text)}
           />
         </View>
-        <TextInput
-          style = {{flex: 8, borderWidth: 1, backgroundColor: 'white'}}
-          value = {this.state.text}
-          onChangeText={(text)=>this._filterSearch(text)}
-        />
       </View>
     )
   }
@@ -182,6 +207,21 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: 'red',
     flexDirection: 'row'
+  },
+  button: {
+    backgroundColor:'red',
+    borderRadius:4,
+    borderColor:'#ffffff',
+    borderWidth:1,
+    height : 35,
+    alignItems:'center',
+    justifyContent:'center',
+    padding:5,
+  },
+  titleButton: {
+    color: 'white',
+    fontWeight: '500',
+    fontSize: 18
   }
 });
 
